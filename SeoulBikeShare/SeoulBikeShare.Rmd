@@ -1,0 +1,213 @@
+---
+title: "Seoul Bike Share"
+author: "by Anil"
+date: "5/25/2022"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE, echo=FALSE, results='hide', message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Rented Bikes by Hour Over 2018 (R Markdown)
+
+Exploratory Data Analysis (EAD)
+
+```{r plot,echo=FALSE, results='hide',message=FALSE,warning=FALSE}
+### Predicting Seoul Bike capacity ###
+#By Anil Niraula
+
+#Data:
+#install.packages("corrplot")
+#library(dplyr)
+#update.packages()
+#https://medium.com/the-researchers-guide/modelling-binary-logistic-regression-using-tidymodels-library-in-r-part-1-c1bdce0ac055
+#https://www.rpubs.com/kujo21/491476 (table with predicted vs. actual data)
+#http://localhost:8888/notebooks/R-candy.ipynb
+#https://github.com/misiungs/ds_bike_seoul/blob/master/main.ipynb
+
+#The project consists of one year data (from 1.12.2017 to 30.11.2018) of count of rented bikes combined with weather information and time. The main idea is to forecast the bike usage based on the past information.
+#This project is based on a dataset: https://archive.ics.uci.edu/ml/datasets/Seoul+Bike+Sharing+Demand for which two articles can be identified:
+
+#install.packages("xts")
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(tidymodels)
+library(corrplot)
+library(readr)
+library(skimr)
+library(data.table)
+library(lubridate) 
+library(xts)
+library(corrplot)
+##
+options(warn = - 1) 
+#install.packages("plotly")
+#library(plotly)
+
+### Loading candy data from GitHub repository
+
+urlfile = "https://raw.githubusercontent.com/ANiraula/data_projects/main/SeoulBikeShare/SeoulBikeData.csv"
+seoul.bike <- data.frame(read_csv(url(urlfile), col_names = FALSE, na = c(""), col_types = NULL)
+)
+####
+
+# Date : year-month-day 
+# Rented Bike count - Count of bikes rented at each hour 
+# Hour - Hour of he day 
+# Temperature-Temperature in Celsius 
+# Humidity - % 
+# Windspeed - m/s 
+# Visibility - 10m 
+# Dew point temperature - Celsius 
+# Solar radiation - MJ/m2 
+# Rainfall - mm 
+# Snowfall - cm 
+# Seasons - Winter, Spring, Summer, Autumn 
+# Holiday - Holiday/No holiday 
+# Functional Day - NoFunc(Non Functional Hours), Fun(Functional hours)
+
+colnames(seoul.bike) <- c("date", "count", "hour", "temp",
+                          "humidity", "wind.speed", "visibility", 
+                          "temp.dew", "solar.radiation", "rainfall",
+                          "snowfall", "seasons", "holiday", "functioning.day")
+
+
+#skim(seoul.bike)
+#head(seoul.bike)
+#plot(seoul.bike$temp,seoul.bike$count)
+#seoul.bike$seasons <- as.numeric(seoul.bike$seasons)
+seoul.bike$holiday <- ifelse(seoul.bike$holiday == "No Holiday", 0, 1)
+seoul.bike$functioning.day <- ifelse(seoul.bike$functioning.day == "No", 0, 1)
+seoul.bike <- seoul.bike %>% select(-seasons)
+seoul.bike$date <- dmy(seoul.bike$date)
+
+
+seoul.bike <- seoul.bike[-1,]
+seoul.bike <- data.table(seoul.bike)
+seoul.bike$count <- as.numeric(seoul.bike$count)
+#seoul.bike_ts <-xts(seoul.bike,order.by=seoul.bike$date)
+
+##########################################
+#seoul.bike[1,]
+#plot Correlation table
+print("Correlation Table")
+#cor(seoul.bike[, 2:13]) %>%
+#  corrplot()
+
+View(seoul.bike)
+
+plot <- seoul.bike %>% 
+  arrange(-count) %>% 
+  ggplot(aes(date, count, fill = hour)) +
+  geom_area() + theme_bw() + facet_wrap(~holiday)
+
+plot
+#View(seoul.bike)
+#ggplot(seoul.bike, aes(x = date, y = count, color = hour)) +
+#  geom_line()
+### Creating binary variables w/ 1 if candy wins >= 50% of the time
+```
+
+## Rented Bikes by Hour (R Markdown)
+
+Text here
+
+```{r table1,echo=FALSE, results='hide',message=FALSE,warning=FALSE}
+### Predicting Seoul Bike capacity ###
+#By Anil Niraula
+
+#Data:
+#install.packages("corrplot")
+#library(dplyr)
+#update.packages()
+#https://medium.com/the-researchers-guide/modelling-binary-logistic-regression-using-tidymodels-library-in-r-part-1-c1bdce0ac055
+#https://www.rpubs.com/kujo21/491476 (table with predicted vs. actual data)
+#http://localhost:8888/notebooks/R-candy.ipynb
+#https://github.com/misiungs/ds_bike_seoul/blob/master/main.ipynb
+
+#The project consists of one year data (from 1.12.2017 to 30.11.2018) of count of rented bikes combined with weather information and time. The main idea is to forecast the bike usage based on the past information.
+#This project is based on a dataset: https://archive.ics.uci.edu/ml/datasets/Seoul+Bike+Sharing+Demand for which two articles can be identified:
+
+#install.packages("xts")
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(tidymodels)
+library(corrplot)
+library(readr)
+library(skimr)
+library(data.table)
+library(lubridate) 
+library(xts)
+library(corrplot)
+##
+options(warn = - 1) 
+#install.packages("plotly")
+#library(plotly)
+
+### Loading candy data from GitHub repository
+
+urlfile = "https://raw.githubusercontent.com/ANiraula/data_projects/main/SeoulBikeShare/SeoulBikeData.csv"
+seoul.bike <- data.frame(read_csv(url(urlfile), col_names = FALSE, na = c(""), col_types = NULL)
+)
+####
+
+# Date : year-month-day 
+# Rented Bike count - Count of bikes rented at each hour 
+# Hour - Hour of he day 
+# Temperature-Temperature in Celsius 
+# Humidity - % 
+# Windspeed - m/s 
+# Visibility - 10m 
+# Dew point temperature - Celsius 
+# Solar radiation - MJ/m2 
+# Rainfall - mm 
+# Snowfall - cm 
+# Seasons - Winter, Spring, Summer, Autumn 
+# Holiday - Holiday/No holiday 
+# Functional Day - NoFunc(Non Functional Hours), Fun(Functional hours)
+
+colnames(seoul.bike) <- c("date", "count", "hour", "temp",
+                          "humidity", "wind.speed", "visibility", 
+                          "temp.dew", "solar.radiation", "rainfall",
+                          "snowfall", "seasons", "holiday", "functioning.day")
+
+
+#skim(seoul.bike)
+#head(seoul.bike)
+#plot(seoul.bike$temp,seoul.bike$count)
+#seoul.bike$seasons <- as.numeric(seoul.bike$seasons)
+seoul.bike$holiday <- ifelse(seoul.bike$holiday == "No Holiday", 0, 1)
+seoul.bike$functioning.day <- ifelse(seoul.bike$functioning.day == "No", 0, 1)
+seoul.bike <- seoul.bike %>% select(-seasons)
+seoul.bike$date <- dmy(seoul.bike$date)
+
+
+seoul.bike <- seoul.bike[-1,]
+seoul.bike <- data.table(seoul.bike)
+seoul.bike$count <- as.numeric(seoul.bike$count)
+#seoul.bike_ts <-xts(seoul.bike,order.by=seoul.bike$date)
+
+##########################################
+#seoul.bike[1,]
+#plot Correlation table
+print("Correlation Table")
+#cor(seoul.bike[, 2:13]) %>%
+#  corrplot()
+#View(seoul.bike)
+#ggplot(seoul.bike, aes(x = date, y = count, color = hour)) +
+#  geom_line()
+
+table1 <- seoul.bike %>% group_by(hour) %>% 
+                    summarize(bike.number = sum(count),
+                    average = mean (count)) %>% arrange(-bike.number)
+
+table1
+### Creating binary variables w/ 1 if candy wins >= 50% of the time
+```
