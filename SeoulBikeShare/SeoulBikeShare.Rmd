@@ -1,6 +1,6 @@
 ---
 title: "Seoul Bike Share"
-author: "by Anil"
+author: "by Anil Niraula"
 date: "5/25/2022"
 output:
   pdf_document: default
@@ -9,6 +9,19 @@ output:
 
 ```{r setup, include=FALSE, echo=FALSE, results='hide', message=FALSE,warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+##EDA:
+#Total bikes rented over 2018 (grouped by hour) -> 
+#Highest renting is in June-July and second peak in September-October &
+#daily peaks appear around 5-7pm time &
+#holidays have lower bike counts
+
+#Corr plot to see how each variable relates
+
+#Logistic regression (predict count > avg(count) = 1, else 0) ~ humidity, hour, visibility, holiday
+#Bayesian model (clustered by hour) w/ new data how distribution of counts will change
+
+##
 ```
 
 ## Rented Bikes by Hour Over 2018 (R Markdown)
@@ -83,13 +96,15 @@ colnames(seoul.bike) <- c("date", "count", "hour", "temp",
 #seoul.bike$seasons <- as.numeric(seoul.bike$seasons)
 seoul.bike$holiday <- ifelse(seoul.bike$holiday == "No Holiday", 0, 1)
 seoul.bike$functioning.day <- ifelse(seoul.bike$functioning.day == "No", 0, 1)
-seoul.bike <- seoul.bike %>% select(-seasons)
 seoul.bike$date <- dmy(seoul.bike$date)
 
 
 seoul.bike <- seoul.bike[-1,]
 seoul.bike <- data.table(seoul.bike)
 seoul.bike$count <- as.numeric(seoul.bike$count)
+#seoul.bike$seasons <-  ifelse(seoul.bike$seasons == "Winter", 1,
+#                              ifelse(seoul.bike$seasons == "Spring", 2,
+#                                     ifelse(seoul.bike$seasons == "Summer", 3, 4)))
 #seoul.bike_ts <-xts(seoul.bike,order.by=seoul.bike$date)
 
 ##########################################
@@ -99,14 +114,19 @@ print("Correlation Table")
 #cor(seoul.bike[, 2:13]) %>%
 #  corrplot()
 
-View(seoul.bike)
+#View(seoul.bike)
 
 plot <- seoul.bike %>% 
   arrange(-count) %>% 
   ggplot(aes(date, count, fill = hour)) +
-  geom_area() + theme_bw() + facet_wrap(~holiday)
+  geom_area() + theme_bw() + facet_wrap(~seasons)
 
 plot
+##
+seoul.bike$seasons <-  ifelse(seoul.bike$seasons == "Winter", 1,
+                             ifelse(seoul.bike$seasons == "Spring", 2,
+                                    ifelse(seoul.bike$seasons == "Summer", 3, 4)))
+
 #View(seoul.bike)
 #ggplot(seoul.bike, aes(x = date, y = count, color = hour)) +
 #  geom_line()
