@@ -4,7 +4,7 @@
 # In[88]:
 
 
-#### Potomac Economics Data Analytics
+#### US Electricity Data Analytics
 ## Anil Niraula
 
 #!pip install matplotlib.pyplot
@@ -18,16 +18,14 @@ import numpy
 
 
 def pullAnnualData(year):
- link = 'https://marketplace.spp.org/file-browser-api/download/generation-mix-historical?path=%2FGenMix_'+str(year)+'.csv'
+ link = 'CONFIDENTIAL-STRING'+str(year)+'.csv'
  req =   requests.get(link)
-#req = requests.get('https://marketplace.spp.org/file-browser-api/download/generation-mix-historical?path=%2FGenMix_2020.csv', verify = False)
  req_content = req.content
 
  csv = open('C:\\temp\\data.csv', 'wb')
  csv.write(req_content)
  data = pd.read_csv('C:\\temp\\data.csv')
  return(data)
-# Get data from https://marketplace.spp.org/pages/generation-mix-historical
 
 #### Pull data for year 2020
 
@@ -92,12 +90,13 @@ cols = ['Coal','Diesel','Hydro','Gas','Nuclear','Waste_Disposal','Waste_Heat','S
 max_load['total'] = max_load[cols].sum(axis=1)
 max_load = pd.DataFrame(max_load)
 
-max_load2 = max_load.loc[:,cols].div(max_load["total"], axis=0)
+max_load2 = max_load.loc[:,cols].div(max_
+                                     load["total"], axis=0)
 max_load2['Load'] = max_load['Load']
 max_load = max_load2
 
 #df = pd.DataFrame(max_load)
-#df.to_csv("Potomac_max_load.csv")
+#df.to_csv("Max_load.csv")
 
 #print(data.max_load2(10))
 
@@ -122,7 +121,7 @@ plt.show()
 
 #max_load['total'] = max_load[cols].sum(axis=1)
 #df = pd.DataFrame(max_load)
-#df.to_csv("Potomac_max_load.csv")
+#df.to_csv("Max_load.csv")
 
 ####
 #### Minimumn Load Hours
@@ -160,7 +159,7 @@ plt.show()
 
 #min_load['total'] = min_load[cols].sum(axis=1)
 #df = pd.DataFrame(min_load)
-#df.to_csv("Potomac_min_load.csv")
+#df.to_csv("Min_load.csv")
 
 
 # In[ ]:
