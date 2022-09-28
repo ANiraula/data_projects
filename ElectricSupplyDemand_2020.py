@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy
 
 #### Pull all electricity data 
-##(Custom FUNTION: pullAnnualData())
+##(Custom FUNCTION: pullAnnualData())
 
 
 def pullAnnualData(year):
